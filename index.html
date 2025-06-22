@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OX Game</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-100 via-pink-100 to-white min-h-screen flex flex-col">
+    <header class="bg-white/80 shadow-lg py-8 text-center">
+        <h1 class="text-4xl font-extrabold text-indigo-600 drop-shadow-lg">OX Game (Tic-Tac-Toe)</h1>
+    </header>
+    <main class="flex-1 flex flex-col items-center justify-center">
+        <div id="game" class="bg-white/90 rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+            <h2 class="text-2xl font-bold text-pink-500 mb-6" id="status">Player X's turn</h2>
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="0"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="1"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="2"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="3"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="4"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="5"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="6"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="7"></button>
+                <button
+                    class="cell w-24 h-24 bg-indigo-100 rounded-xl text-4xl font-extrabold shadow hover:bg-pink-100 transition"
+                    data-index="8"></button>
+            </div>
+            <button id="reset"
+                class="px-6 py-2 bg-gradient-to-r from-indigo-500 to-pink-400 text-white rounded-full font-semibold shadow-md hover:scale-105 transition">Restart</button>
+        </div>
+    </main>
+    <footer class="bg-white/80 text-center py-4 text-indigo-500 font-medium shadow-inner">
+        <p>&copy; 2025 OX Game</p>
+    </footer>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const status = document.getElementById('status');
+        const resetBtn = document.getElementById('reset');
+        let board = Array(9).fill('');
+        let currentPlayer = 'X';
+        let gameActive = true;
+
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+            for (const pattern of winPatterns) {
+                const [a, b, c] = pattern;
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    return board[a];
+                }
+            }
+            if (board.every(cell => cell)) return 'draw';
+            return null;
+        }
+
+        function handleClick(e) {
+            const idx = e.target.dataset.index;
+            if (!gameActive || board[idx]) return;
+            board[idx] = currentPlayer;
+            e.target.textContent = currentPlayer;
+            const winner = checkWinner();
+            if (winner) {
+                gameActive = false;
+                if (winner === 'draw') {
+                    status.textContent = "It's a draw!";
+                    status.className = "text-2xl font-bold text-gray-500 mb-6";
+                } else {
+                    status.textContent = `Player ${winner} wins!`;
+                    status.className = winner === 'X'
+                        ? "text-2xl font-bold text-indigo-600 mb-6 animate-bounce"
+                        : "text-2xl font-bold text-pink-500 mb-6 animate-bounce";
+                }
+            } else {
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                status.textContent = `Player ${currentPlayer}'s turn`;
+                status.className = currentPlayer === 'X'
+                    ? "text-2xl font-bold text-indigo-600 mb-6"
+                    : "text-2xl font-bold text-pink-500 mb-6";
+            }
+        }
+
+        function resetGame() {
+            board = Array(9).fill('');
+            currentPlayer = 'X';
+            gameActive = true;
+            cells.forEach(cell => cell.textContent = '');
+            status.textContent = "Player X's turn";
+            status.className = "text-2xl font-bold text-indigo-600 mb-6";
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleClick));
+        resetBtn.addEventListener('click', resetGame);
+    </script>
+</body>
+
+</html>
